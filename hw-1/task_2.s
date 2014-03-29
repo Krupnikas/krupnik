@@ -54,5 +54,5 @@ finish:
 	movl	%ebp,	%esp	#epilog
 	popl	%ebp
 
-#	movl	$0,	%eax	#return 0
+	movl	$0,	%eax	#return 0
 ret
