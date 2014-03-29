@@ -39,11 +39,11 @@ begin:
         call scanf
         addl $8, %esp
        
-	movl iter, %eax
+	movl i, %eax
         addl $1, %eax
-        movl %eax, iter
+        movl %eax, i
 l_1:
-        movl iter, %eax
+        movl i, %eax
         cmpl $2, %eax
         
 	jle begin
@@ -51,7 +51,7 @@ l_1:
 	movl a, %eax
         movl %eax, int_1
         movl $1, %eax
-        movl %eax, iter
+        movl %eax, i
         jmp l_2
 
 check:
@@ -74,7 +74,7 @@ l_2:
 l_3:
         movl i, %eax
         addl $1, %eax
-        movl %eax, iter
+        movl %eax, i
 l_4:
         movl i, %eax
         cmpl $2, %eax
