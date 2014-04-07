@@ -2,7 +2,7 @@
 printf_format:
 	.string "%s\n"
 str_in:
-	.string "abc123()!@!777"
+	.string "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	.set str_in_length, .-str_in
 	.bss
 str_out:
@@ -20,27 +20,24 @@ main:
 1:
 	lodsb
 
-	cmpl $77, %al
+
+	cmpl $77, %eax
 	jg AZ
 	jmp ZA
 
 AZ:	
-	movl %al,  %eax
 	subl $65,  %eax
 	movl %eax, %edx
 	movl $90,  %eax
-	subl %edx, %eax
-	movl %eax, %al	
+	subl %edx, %eax	
 
 	jmp contune
 
 ZA: 	
-        movl $90,  %eax
-        subl %al,  %eax
-        movl %eax, %edx
+        movl $90,  %edx
+        subl %eax, %edx
         movl $65,  %eax
         addl %edx, %eax 
-        movl %eax, %al
 
 
 contune:
