@@ -36,7 +36,8 @@ printf("Numbers was     ");
 
 printf("\nNow numbers are ");
 double q, b, previous_y = y[0];
-
+int j = 0;
+while (j < M) {	
 	for (i = 1; i < N; i++) {
 		q = (y[i] - previous_y) / h;	//y = qx + b;
 		b = y[i] - q * x[i];
@@ -46,7 +47,8 @@ double q, b, previous_y = y[0];
 
         q = (y[0] - previous_y) / h;   		//Для 0-го узла отдельно
         y[0] = (h - Cx * t) * q + previous_y;
-
+	j++;
+}
 //Дальше вывод:
 
         DM_plot_1d(x, y, N, "Test 1", 0);
