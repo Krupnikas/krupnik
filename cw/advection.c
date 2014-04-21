@@ -14,23 +14,26 @@ const double Cx = 1;
 const double k = 0.6;
 
 	int N, M;
-	double x[16000];
-	double y[16000];
+	double x[16000] = {0};
+	double y[16000] = {0};
 	double h, t;
 
-	scanf("%d", N);
-	h = 2.0 / N;
+	scanf("%d", &N);
+	h = 2.0 / (N - 1);				
 	t = (k * h) / Cx;
 
 	M = 2.0 / (Cx * t); 			// Количество шагов по времени
 
 int i;
 
+printf("Numbers was     ");
 	for (i = 0; i < N; i++) {
  		x[i] = (i * h) - 1;
 		y[i] = f(x[i]);
+		printf("%lf ", y[i]);
         }; 
 
+printf("\nNow numbers are ");
 double q, b;
 
 	for (i = 1; i < N; i++) {
@@ -46,7 +49,7 @@ double q, b;
 //Дальше вывод:
 
 	for (i = 0; i < N; i++) {
-		printf ("%d ",y[i]);
+		printf ("%lf ",y[i]);
 	}
 return 0;
 }
