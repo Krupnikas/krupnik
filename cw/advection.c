@@ -17,6 +17,8 @@ const double k = 0.5;
 	int N, M;
 	double x[16000] = {0};
 	double y[16000] = {0};
+	double previous_y[16000] = {0};
+	double d[16000] = {0};
 	double y_etalon[16000] = {0};
 	double h, t;
 
@@ -28,29 +30,37 @@ const double k = 0.5;
 	printf("M = %d\n", M);
 int i;
 
-printf("Numbers was     ");
+//printf("Numbers was     ");
 	for (i = 0; i < N; i++) {
  		x[i] = (i * h) - 1;
-		y[i] = y_etalon[i] = f(x[i]);
-		printf("%lf ", y[i]);
+		y[i] = previous_y[i] = y_etalon[i] = f(x[i]);
+	//	printf("%lf ", y[i]);
         }; 
 
-printf("\nNow numbers are ");
-double q, b, previous_y = y[0];
+//printf("\nNow numbers are ");
+double A, B, C, D, q, b;
 
 int j = 0;
 
 while (j < M) {
+	#pragma parallel for
 	for (i = 1; i < N; i++) {
-		q = (y[i] - previous_y) / h;	//y = qx + b;
+		q = (y[i] - previous_y[i-1]) / h;	//y = Axxx + Bxx + Cx + D;
 		b = y[i] - q * x[i];
-		previous_y = y[i];
 		y[i] = q * (x[i] - Cx * t) + b; 	
 	};
 
-        q = (y[0] - previous_y) / h;   		//Для 0-го узла отдельно
-        y[0] = (h - Cx * t) * q + previous_y;
-printf("%d ", j);
+
+        q = (y[0] - previous_y[N-1]) / h;   		//Для 0-го узла отдельно
+        y[0] = (h - Cx * t) * q + previous_y[N-1];
+
+	#pragma parallel for
+        for (i = 0; i < 16000; i++){
+                previous_y[i] = y[i];
+        }
+
+
+//printf("%d ", j);
 j++;
 }
 //Дальше вывод:
@@ -59,9 +69,9 @@ j++;
         DM_plot_1d_etalon(x, y, y_etalon, N, "Test 1", 1);
 
 
-	for (i = 0; i < N; i++) {
-		printf ("%lf ",y[i]);
-	}
+	//for (i = 0; i < N; i++) {
+	//	printf ("%lf ",y[i]);
+	//}
 return 0;
 }
 
