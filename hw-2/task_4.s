@@ -1,65 +1,70 @@
 	.data
-printf_format:
-	.string "%s\n"
-str_in:
-	.string "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	.set str_in_length, .-str_in
-	.bss
-str_out:
-	.space str_in_length
-	.text
-	.globl main
-main:
-	pushl %ebp
-	movl %esp, %ebp
 
-	movl $str_in, %esi
-	movl $str_out, %edi
-
-	movl $str_in_length - 1, %ecx
-1:
-	lodsb
-
-#	cmpb $65, %al 			#Проверка, является ли символ заглавной буквой?
-#	jg contune
+fmt_d:	.string "%d"
+fmt_f:	.string "%lf"
+fmt_fn:	.string "%.10lf\n"
+fmt_in:	.string "%lf %lf"
+fmt_xn:	.string "%x\n"
 	
-#	cmpb $90, %al
-#	jl contune
+a:	.double	-3.1
+b:	.double 2.0
+c:	.double 1.5
+d:	.double -0.9
 
-	cmpb $77, %al			#Смена буквы на симметричную. Начало.
-	jg AZ
-	jmp ZA
+	.bss
+buf:	.space 100
+x:	.space 8
+y:	.space 8
+z:	.space 8
 
-AZ:	
-	subl $65,  %eax
-	movl %eax, %edx
-	movl $90,  %eax
-	subl %edx, %eax	
+	.text
+	.global main
+	.type main, @function
+main:
+	pushl	%ebp
+	movl	%esp,	%ebp
 
-	jmp contune
+	pushl	$y
+	pushl	$x
+	pushl	$fmt_in
+	call scanf
+	addl	$0xc,	%esp
+	
+	finit
+	 fldl	y
+	 fldl	x
+	 fyl2x
 
-ZA: 	
-        movl $90,  %edx
-        subl %eax, %edx
-        movl $65,  %eax
-        addl %edx, %eax 		#Смена буквы на симметричную. Конец.
+	frndint	
+	fld1
+	fscale
 
+	 fldl	y
+	 fldl	x
+	 fyl2x
 
-contune:
-	stosb
+	frndint
 
-	loop 1b
+	 fldl	y
+	 fldl	x
+	 fyl2x
 
-	movsb
+	fsubp
+	f2xm1
+	fld1
+	faddp
+	fmulp
 
-
-	pushl $str_out
-	pushl $printf_format
+	sub	$8,	%esp
+	fstpl	(%esp)
+	pushl	$fmt_fn
 	call printf
 
-	movl $0, %eax
+	addl	$12,	%esp
 
-	movl %ebp, %esp
-	popl %ebp
+	movl	$0,	%eax
 
-	ret 
+	movl	%ebp,	%esp
+	popl	%ebp
+
+	ret
