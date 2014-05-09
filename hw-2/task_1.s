@@ -1,63 +1,101 @@
 	.file	"task_1.c"
+	.text
+.globl pow
+	.type	pow, @function
+pow:
+	pushl	%ebp
+	movl	%esp, %ebp
+	subl	$32, %esp
+	movl	8(%ebp), %eax
+	movl	%eax, -24(%ebp)
+	movl	12(%ebp), %eax
+	movl	%eax, -20(%ebp)
+	movl	16(%ebp), %eax
+	movl	%eax, -32(%ebp)
+	movl	20(%ebp), %eax
+	movl	%eax, -28(%ebp)
+	fldl	-24(%ebp)
+	fstpl	-8(%ebp)
+	fld1
+	fstpl	-16(%ebp)
+	jmp	.L2
+.L3:
+	fldl	-8(%ebp)
+	fmull	-24(%ebp)
+	fstpl	-8(%ebp)
+	fldl	-16(%ebp)
+	fld1
+	faddp	%st, %st(1)
+	fstpl	-16(%ebp)
+.L2:
+	fldl	-16(%ebp)
+	fldl	-32(%ebp)
+	fucompp
+	fnstsw	%ax
+	testb	$69, %ah
+	sete	%al
+	testb	%al, %al
+	jne	.L3
+	fldl	-8(%ebp)
+	leave
+	ret
+	.size	pow, .-pow
 	.section	.rodata
-.LC0:
+.LC2:
 	.string	"%lf"
+.LC5:
+	.string	"%lf\n"
 	.text
 .globl main
 	.type	main, @function
 main:
-.LFB0:
-	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	subq	$32, %rsp
-	movl	$.LC0, %eax
-	leaq	-8(%rbp), %rdx
-	movq	%rdx, %rsi
-	movq	%rax, %rdi
-	movl	$0, %eax
+	pushl	%ebp
+	movl	%esp, %ebp
+	andl	$-16, %esp
+	subl	$32, %esp
+	movl	$.LC2, %eax
+	leal	24(%esp), %edx
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
 	call	__isoc99_scanf
-	movsd	-8(%rbp), %xmm0
-	xorpd	%xmm1, %xmm1
-	ucomisd	%xmm1, %xmm0
+	fldl	24(%esp)
+	fldz
+	fxch	%st(1)
+	fucompp
+	fnstsw	%ax
+	sahf
 	setae	%al
 	testb	%al, %al
-	je	.L2
-	movsd	-8(%rbp), %xmm1
-	movsd	.LC2(%rip), %xmm0
+	je	.L6
+	fldl	24(%esp)
+	fstpl	8(%esp)
+	fldl	.LC4
+	fstpl	(%esp)
 	call	pow
-	movsd	%xmm0, -24(%rbp)
-	movq	-24(%rbp), %rax
-	movq	%rax, -24(%rbp)
-	movsd	-24(%rbp), %xmm0
-	movl	$.LC0, %eax
-	movq	%rax, %rdi
-	movl	$1, %eax
+	movl	$.LC5, %eax
+	fstpl	4(%esp)
+	movl	%eax, (%esp)
 	call	printf
-	jmp	.L3
-.L2:
-	movsd	-8(%rbp), %xmm0
-	movsd	.LC2(%rip), %xmm1
+	jmp	.L7
+.L6:
+	fldl	24(%esp)
+	fldl	.LC4
+	fstpl	8(%esp)
+	fstpl	(%esp)
 	call	pow
-	movl	$.LC0, %eax
-	movq	%rax, %rdi
-	movl	$1, %eax
+	movl	$.LC5, %eax
+	fstpl	4(%esp)
+	movl	%eax, (%esp)
 	call	printf
-.L3:
+.L7:
 	movl	$0, %eax
 	leave
-	.cfi_def_cfa 7, 8
 	ret
-	.cfi_endproc
-.LFE0:
 	.size	main, .-main
 	.section	.rodata
 	.align 8
-.LC2:
+.LC4:
 	.long	0
 	.long	1073741824
-	.ident	"GCC: (GNU) 4.4.7 20120313 (Red Hat 4.4.7-3)"
+	.ident	"GCC: (Debian 4.4.5-8) 4.4.5"
 	.section	.note.GNU-stack,"",@progbits
