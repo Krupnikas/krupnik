@@ -33,34 +33,34 @@ main:
 
 	movl $string1, %esi
 	movl $0, %ecx
-label_1:  			
+len_1:  			
 	lodsb
 	cmp $0, %al		#найдем длину первой строки
-	je break_1
+	je end_1
 	addl $1, %ecx
-	jmp label_1
-break_1:
+	jmp len_1
+end_1:
 	movl %ecx, length1
 
         movl $string2, %esi
         movl $0, %ecx
-label_2:  		
+len_2:  		
         lodsb			#найдем длину второй строки
         cmp $0, %al
-        je break_2
+        je end_2
         addl $1, %ecx
-        jmp label_2
-break_2:
+        jmp len_2
+end_2:
         movl %ecx, length2
 
 	movl length2, %ecx
 	movl length1, %eax
 	subl %eax, %ecx
 	cmp $0, %ecx   		#Если вторая короче первой, то в ней нет первой
-	jl finish      
+	jl print 
 	addl $1, %ecx  
 
-loop_label:	
+compair:	
 	subl $1, %ecx  
 	pushl %ecx
 	movl $string2, %esi	#Сравниваем каждый раз с нового места символы
@@ -78,10 +78,10 @@ loop_label:
 	pushl v
 break_in:
 	popl %ecx
-	addl $1, %ecx  #back %ecx - v
-	loop loop_label
+	addl $1, %ecx 
+	loop compair
 
-finish:
+print:
 	addl $1, v
 	pushl v
 	pushl $str_out
