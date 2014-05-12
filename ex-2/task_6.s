@@ -18,18 +18,18 @@ main:
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
 	call	scanf
-	jmp	.Next
-.Per:
+	jmp	Next
+Per:
 	addl	$1, 284(%esp)
-.Next:
+Next:
 	movl	284(%esp), %eax
 	movzbl	23(%esp,%eax), %eax
 	testb	%al, %al
-	jne	.Per
+	jne	Per
 	subl	$1, 284(%esp)
 	movl	$0, 280(%esp)
-	jmp	.Contune
-.Change:
+	jmp	Contune
+Change:
 	movl	280(%esp), %eax
 	movzbl	23(%esp,%eax), %eax
 	movb	%al, 279(%esp)
@@ -47,14 +47,14 @@ main:
 	movzbl	279(%esp), %eax
 	movb	%al, 23(%esp,%edx)
 	addl	$1, 280(%esp)
-.Contune:
+Contune:
 	movl	284(%esp), %eax
 	movl	%eax, %edx
 	shrl	$31, %edx
 	leal	(%edx,%eax), %eax
 	sarl	%eax
 	cmpl	280(%esp), %eax
-	jg	.Change
+	jg	Change
 	leal	23(%esp), %eax
 	movl	%eax, (%esp)
 	call	puts
