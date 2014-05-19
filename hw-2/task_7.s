@@ -1,6 +1,6 @@
 #задача 2.6.6 Программа получает строку без пробелов и если строка начинается и кончается разными цифрами, то заглавные латинские букы меняются на симметричные, а иначе удаляются все повторяющиеся символы. 
 	.data
-.LC0:
+str_in:
 	.string	"%s"
 	.text
 .globl main
@@ -22,52 +22,52 @@ main:
 	rep stosl
 
 	movl	$0, 136(%esp)
-	movl	$.LC0, %eax
+	movl	$str_in, %eax
 	leal	28(%esp), %edx
 	movl	%edx, 4(%esp)
 	movl	%eax, (%esp)
-	call	__isoc99_scanf
-	jmp	.L2
-.L3:
+	call	scanf
+	jmp	start
+correct:
 	addl	$1, 136(%esp)
-.L2:
+start:
 	movl	136(%esp), %eax
 	movzbl	28(%esp,%eax), %eax
 	testb	%al, %al
-	jne	.L3
+	jne	correct
 	movzbl	28(%esp), %eax
 	cmpb	$47, %al
-	jle	.L4
+	jle	per
 	movzbl	28(%esp), %eax
 	cmpb	$57, %al
-	jg	.L4
+	jg	per
 	movl	136(%esp), %eax
 	subl	$1, %eax
 	movzbl	28(%esp,%eax), %eax
 	cmpb	$47, %al
-	jle	.L4
+	jle	per
 	movl	136(%esp), %eax
 	subl	$1, %eax
 	movzbl	28(%esp,%eax), %eax
 	cmpb	$57, %al
-	jg	.L4
+	jg	per
 	movzbl	28(%esp), %edx
 	movl	136(%esp), %eax
 	subl	$1, %eax
 	movzbl	28(%esp,%eax), %eax
 	cmpb	%al, %dl
-	je	.L4
+	je	per
 	movl	$0, 128(%esp)
-	jmp	.L5
-.L7:
+	jmp	comp
+ch:
 	movl	128(%esp), %eax
 	movzbl	28(%esp,%eax), %eax
 	cmpb	$64, %al
-	jle	.L6
+	jle	corr				#
 	movl	128(%esp), %eax
 	movzbl	28(%esp,%eax), %eax
 	cmpb	$90, %al
-	jg	.L6
+	jg	corr          			#
 	movl	128(%esp), %eax
 	movl	128(%esp), %edx
 	movzbl	28(%esp,%edx), %edx
@@ -76,47 +76,47 @@ main:
 	subb	%dl, %bl
 	movl	%ebx, %edx
 	movb	%dl, 28(%esp,%eax)
-.L6:
+corr:
 	addl	$1, 128(%esp)
-.L5:
+comp:
 	movl	128(%esp), %eax
 	cmpl	136(%esp), %eax
-	jl	.L7
-	jmp	.L8
-.L4:
+	jl	ch
+	jmp	end
+per:
 	movl	$0, 128(%esp)
 	movl	$1, 132(%esp)
-	jmp	.L9
-.L11:
+	jmp	corr
+comparing:
 	movl	128(%esp), %eax
 	movzbl	28(%esp,%eax), %edx
 	movl	132(%esp), %eax
 	movzbl	28(%esp,%eax), %eax
 	cmpb	%al, %dl		#comparing of symbols
-	jne	.L10
+	jne	sp
 	addl	$1, 132(%esp)
-	jmp	.L9
-.L10:
+	jmp	cont
+sp:
 	addl	$1, 128(%esp)
 	movl	128(%esp), %eax
 	movl	132(%esp), %edx
 	movzbl	28(%esp,%edx), %edx
 	movb	%dl, 28(%esp,%eax)
-.L9:
+cont:
 	movl	132(%esp), %eax
 	cmpl	136(%esp), %eax
-	jl	.L11
+	jl	comparing
 	addl	$1, 128(%esp)
-	jmp	.L12
-.L13:
+	jmp	next
+rep:
 	movl	128(%esp), %eax
 	movb	$0, 28(%esp,%eax)
 	addl	$1, 128(%esp)
-.L12:
+next:
 	movl	128(%esp), %eax
 	cmpl	136(%esp), %eax
-	jl	.L13
-.L8:
+	jle  	rep
+end:
 	leal	28(%esp), %eax
 	movl	%eax, (%esp)
 	call	puts
